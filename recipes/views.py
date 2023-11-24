@@ -10,22 +10,69 @@ def recipe_list(request):
     recipes = Nutrition.objects.all()
     result_recipes = Nutrition.objects.all()[:5]
 
-    # plotly 그래프 생성
+    # Plotly 그래프 생성
+
+    # 전체 영양소
     x_values = ['Kcal', 'Protein', 'Fat', 'Carbohydrates']
     traces=[]
     for recipe in result_recipes:
         y_values = [recipe.kcal, recipe.protein, recipe.fat, recipe.carbohydrates]
-        trace = go.Scatter(x=x_values, y=y_values, mode='markers+lines', name= str(recipe.name))
+        trace = go.Scatter(x=x_values, y=y_values, mode='markers+lines', name=str(recipe.name))
         traces.append(trace)
 
-    # Plotly 그래프 생성
     layout = go.Layout(title='영양성분 비교', showlegend=True)
     fig = go.Figure(data=traces, layout=layout)
 
     # Plotly 그래프를 HTML로 변환
     plot_div = plot(fig, output_type='div', include_plotlyjs=False)
 
-    return render(request, 'recipe_list.html', {'recipes': recipes, 'plot_div':plot_div})
+    # Kcal
+    kcal_x = [str(recipe.name) for recipe in result_recipes]
+    kcal_y = [recipe.kcal for recipe in result_recipes]
+    trace_kcal = go.Scatter(x=kcal_x, y=kcal_y, mode='markers+lines', name='칼로리')
+
+    layout_kcal = go.Layout(title='칼로리 비교', showlegend=True)
+    fig_kcal = go.Figure(data=trace_kcal, layout=layout_kcal)
+
+    plot_div_kcal = plot(fig_kcal, output_type='div', include_plotlyjs=False)
+
+    # Protein
+    protein_x = [str(recipe.name) for recipe in result_recipes]
+    protein_y = [recipe.protein for recipe in result_recipes]
+    trace_protein = go.Scatter(x=protein_x, y=protein_y, mode='markers+lines', name='단백질')
+
+    layout_protein = go.Layout(title='단백질 비교', showlegend=True)
+    fig_protein = go.Figure(data=trace_protein, layout=layout_protein)
+
+    plot_div_protein = plot(fig_protein, output_type='div', include_plotlyjs=False)
+
+    # fat
+    fat_x = [str(recipe.name) for recipe in result_recipes]
+    fat_y = [recipe.fat for recipe in result_recipes]
+    trace_fat = go.Scatter(x=fat_x, y=fat_y, mode='markers+lines', name='지방')
+
+    layout_fat = go.Layout(title='지방 비교', showlegend=True)
+    fig_fat = go.Figure(data=trace_fat, layout=layout_fat)
+
+    plot_div_fat = plot(fig_fat, output_type='div', include_plotlyjs=False)
+
+    # carbo
+    carbo_x = [str(recipe.name) for recipe in result_recipes]
+    carbo_y = [recipe.carbohydrates for recipe in result_recipes]
+    trace_carbo = go.Scatter(x=carbo_x, y=carbo_y, mode='markers+lines', name='탄수화물')
+
+    layout_carbo = go.Layout(title='탄수화물 비교', showlegend=True)
+    fig_carbo = go.Figure(data=trace_carbo, layout=layout_carbo)
+
+    plot_div_carbo = plot(fig_carbo, output_type='div', include_plotlyjs=False)
+
+    return render(request, 'recipe_list.html', 
+                  {'recipes': recipes, 
+                   'plot_div': plot_div, 
+                   'plot_div_kcal': plot_div_kcal, 
+                   'plot_div_protein': plot_div_protein, 
+                   'plot_div_fat': plot_div_fat, 
+                   'plot_div_carbo': plot_div_carbo})
     
 
 def recipe_detail(request, recipe_id):
