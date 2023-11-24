@@ -1,23 +1,32 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from plotly.offline import plot
+import plotly.graph_objs as go
 from .models import Recipe, Ingredient, Nutrition
 
 def home(request):
     return render(request, 'home.html')
 
 def recipe_list(request):
-    # recipes = Recipe.objects.order_by('title')
     recipes = Nutrition.objects.all()
-    return render(request, 'recipe_list.html', {'recipes': recipes})
-    # return render(request, 'recipe_list.html', {'recipes': recipes})
-    # if request.method == 'POST':
-    #     ingredients = request.POST.get('ingredients')
-    #     # 이후 레시피 리스트를 가져오는 모델 함수를 호출하여 리스트를 구현하세요.
-    #     # recipes = get_recipes(ingredients)
-    #     recipes = []  # 임시로 레시피 리스트를 빈 리스트로 설정
+    result_recipes = Nutrition.objects.all()[:5]
 
-    #     return render(request, 'recipe_list.html', {'recipes': recipes, 'ingredients': ingredients})
-    # else:
-    #     return redirect('home')
+    # plotly 그래프 생성
+    x_values = ['Kcal', 'Protein', 'Fat', 'Carbohydrates']
+    traces=[]
+    for recipe in result_recipes:
+        y_values = [recipe.kcal, recipe.protein, recipe.fat, recipe.carbohydrates]
+        trace = go.Scatter(x=x_values, y=y_values, mode='markers+lines', name= str(recipe.name))
+        traces.append(trace)
+
+    # Plotly 그래프 생성
+    layout = go.Layout(title='영양성분 비교', showlegend=True)
+    fig = go.Figure(data=traces, layout=layout)
+
+    # Plotly 그래프를 HTML로 변환
+    plot_div = plot(fig, output_type='div', include_plotlyjs=False)
+
+    return render(request, 'recipe_list.html', {'recipes': recipes, 'plot_div':plot_div})
+    
 
 def recipe_detail(request, recipe_id):
     # 이후 레시피 상세 정보를 가져오는 모델 함수를 호출하여 정보를 구현하세요.
