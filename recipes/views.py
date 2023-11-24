@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from plotly.offline import plot
 import plotly.graph_objs as go
+import plotly.express as px
 from .models import Recipe, Ingredient, Nutrition
 
 def home(request):
@@ -11,8 +12,8 @@ def recipe_list(request):
     result_recipes = Nutrition.objects.all()[:5]
 
     # Plotly 그래프 생성
-
     # 전체 영양소
+    '''
     x_values = ['Kcal', 'Protein', 'Fat', 'Carbohydrates']
     traces=[]
     for recipe in result_recipes:
@@ -65,14 +66,80 @@ def recipe_list(request):
     fig_carbo = go.Figure(data=trace_carbo, layout=layout_carbo)
 
     plot_div_carbo = plot(fig_carbo, output_type='div', include_plotlyjs=False)
+'''
+    # 방사형 차트
+    df = {
+        'recipe_name': [str(recipe.name) for recipe in result_recipes],
+        'kcal': [recipe.kcal for recipe in result_recipes],
+        'protein': [recipe.protein for recipe in result_recipes],
+        'fat': [recipe.fat for recipe in result_recipes],
+        'carbo': [recipe.carbohydrates for recipe in result_recipes],
+    }
+
+    fig_radar_kcal = px.line_polar(df, r="kcal", theta='recipe_name', line_close=True)
+    fig_radar_kcal.update_traces(fill='toself')
+    fig_radar_kcal.update_layout(
+    title='칼로리 비교',
+    polar=dict(
+        radialaxis=dict(
+            visible=True
+        )
+    ),
+    showlegend=True
+    )
+    plot_div_radar_kcal = plot(fig_radar_kcal, output_type='div', include_plotlyjs=False)
+
+    fig_radar_protein = px.line_polar(df, r="protein", theta='recipe_name', line_close=True)
+    fig_radar_protein.update_traces(fill='toself')
+    fig_radar_protein.update_layout(
+    title='단백질 비교',
+    polar=dict(
+        radialaxis=dict(
+            visible=True
+        )
+    ),
+    showlegend=True
+    )
+    plot_div_radar_protein = plot(fig_radar_protein, output_type='div', include_plotlyjs=False)
+
+    fig_radar_fat = px.line_polar(df, r="fat", theta='recipe_name', line_close=True)
+    fig_radar_fat.update_traces(fill='toself')
+    fig_radar_fat.update_layout(
+    title='지방 비교',
+    polar=dict(
+        radialaxis=dict(
+            visible=True
+        )
+    ),
+    showlegend=True
+    )
+    plot_div_radar_fat = plot(fig_radar_fat, output_type='div', include_plotlyjs=False)
+
+    fig_radar_carbo = px.line_polar(df, r="carbo", theta='recipe_name', line_close=True)
+    fig_radar_carbo.update_traces(fill='toself')
+    fig_radar_carbo.update_layout(
+    title='탄수화물 비교',
+    polar=dict(
+        radialaxis=dict(
+            visible=True
+        )
+    ),
+    showlegend=True
+    )
+    plot_div_radar_carbo = plot(fig_radar_carbo, output_type='div', include_plotlyjs=False)
 
     return render(request, 'recipe_list.html', 
                   {'recipes': recipes, 
-                   'plot_div': plot_div, 
-                   'plot_div_kcal': plot_div_kcal, 
-                   'plot_div_protein': plot_div_protein, 
-                   'plot_div_fat': plot_div_fat, 
-                   'plot_div_carbo': plot_div_carbo})
+                #    'plot_div': plot_div, 
+                #    'plot_div_kcal': plot_div_kcal, 
+                #    'plot_div_protein': plot_div_protein, 
+                #    'plot_div_fat': plot_div_fat, 
+                #    'plot_div_carbo': plot_div_carbo,
+                   'plot_div_radar_kcal': plot_div_radar_kcal,
+                   'plot_div_radar_protein': plot_div_radar_protein,
+                   'plot_div_radar_fat': plot_div_radar_fat,
+                   'plot_div_radar_carbo': plot_div_radar_carbo
+                   })
     
 
 def recipe_detail(request, recipe_id):
