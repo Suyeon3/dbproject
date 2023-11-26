@@ -3,7 +3,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Recipes(models.Model):
-    name = models.TextField(primary_key=True)
+    id = models.AutoField(primary_key=True)
+    foodName = models.TextField()
     ingredient = models.TextField()
     amount = models.TextField(
         blank=True,
@@ -20,12 +21,12 @@ class Recipes(models.Model):
     recipe = models.TextField()
 
     def __str__(self):
-        return self.name
+        return self.foodName
 
 
 class Nutrition(models.Model):
-    # foodName = models.TextField()
-    name = models.ForeignKey(Recipes, on_delete=models.CASCADE, db_column="name")
+    name = models.TextField()
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE, to_field="id", unique=True)
     kcal = models.FloatField()
     protein = models.FloatField()
     fat = models.FloatField()
@@ -41,6 +42,7 @@ class Nutrition(models.Model):
 
 class Review(models.Model):
     foodName = models.TextField()
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE, to_field="id")
     userId = models.TextField(
         blank=True,
         null=True
@@ -60,7 +62,8 @@ class Review(models.Model):
     
 
 class Trend(models.Model):
-    foodName = models.TextField()
+    name = models.TextField()
+    recipe = models.ForeignKey(Recipes, on_delete=models.CASCADE, to_field="id", unique=True)
     t1 = models.FloatField()
     t2 = models.FloatField()
     t3 = models.FloatField()
