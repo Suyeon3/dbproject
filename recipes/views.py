@@ -1,11 +1,14 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from plotly.offline import plot
 import plotly.graph_objs as go
 import plotly.express as px
-from .models import Recipe, Ingredient, Nutrition
+from plotly.offline import plot
+
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Recipes, Nutrition, Review, Trend
+
 
 def home(request):
     return render(request, 'home.html')
+
 
 def recipe_list(request):
     recipes = Nutrition.objects.all()
@@ -100,7 +103,7 @@ def recipe_detail(request, recipe_id):
     # 이후 레시피 상세 정보를 가져오는 모델 함수를 호출하여 정보를 구현하세요.
     # recipe = get_recipe(recipe_id)
     # recipe = {}  # 임시로 레시피 정보를 빈 딕셔너리로 설정
-    recipe = get_object_or_404(Recipe, pk=recipe_id)
+    recipe = get_object_or_404(Recipes, pk=recipe_id)
     return render(request, 'recipe_detail.html', {'recipe': recipe})
 
 
