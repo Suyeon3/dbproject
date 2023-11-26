@@ -51,7 +51,7 @@ def recipe_list(request):
       r=df['kcal'],
       theta=df['recipe_name'],
       fill='toself',
-      opacity=0.5,
+      opacity=0.3,
       name='kcal'
     ))
 
@@ -59,7 +59,7 @@ def recipe_list(request):
       r=df['protein'],
       theta=df['recipe_name'],
       fill='toself',
-      opacity=0.5,
+      opacity=0.3,
       name='protein'
     ))
 
@@ -67,7 +67,7 @@ def recipe_list(request):
       r=df['fat'],
       theta=df['recipe_name'],
       fill='toself',
-      opacity=0.5,
+      opacity=0.3,
       name='fat'
     ))
 
@@ -75,7 +75,7 @@ def recipe_list(request):
       r=df['carbo'],
       theta=df['recipe_name'],
       fill='toself',
-      opacity=0.5,
+      opacity=0.3,
       name='carbohydrates'
     ))
     
@@ -91,7 +91,7 @@ def recipe_list(request):
 
 
     return render(request, 'recipe_list.html', 
-                  {'recipes': recipes, 
+                  {'result_recipes': result_recipes, 
                    'plot_div_radar': plot_div_radar
                    })
     

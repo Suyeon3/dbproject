@@ -49,7 +49,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for recipe in recipes %}
+                {% for recipe in result_recipes %}
                     <tr>
                         <td><a href="{% url 'recipe_detail' recipe.id %}">{{ recipe.name }}</a></td>
                         <td>{{ recipe.kcal }}</td>
