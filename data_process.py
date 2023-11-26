@@ -13,6 +13,6 @@ conn = sqlite3.connect(database)
 
 df.to_sql(name='recipes_nutrition', con=conn, if_exists='replace', index=False)
 df_trend.to_sql(name='recipes_trend', con=conn, if_exists='replace', index=False)
-df_recipe.to_sql(name='recipes_recipe', con=conn, if_exists='replace', index=False)
+df_recipe.to_sql(name='recipes_recipes', con=conn, if_exists='replace', index=False)
 df_review.to_sql(name='recipes_review', con=conn, if_exists='replace', index=False)
 conn.close()
